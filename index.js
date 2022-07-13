@@ -20,13 +20,13 @@ async function run() {
     try {
         const usersCollection = client.db('vitaradb').collection('usersCollection');
 
-
+        // get all users
         app.get('/users', async (req, res) => {
             const query = {};
             const result = await usersCollection.find(query).toArray();
             res.send(result);
         });
-
+        // add users to db
         app.post('/users', async (req, res) => {
             try {
                 const salt = await bcrypt.genSalt();
@@ -43,7 +43,7 @@ async function run() {
 
         })
 
-
+        // secure the password
         app.post('/users/login', async (req, res) => {
             try {
                 const user = await usersCollection.findOne({ email: req.body.email });

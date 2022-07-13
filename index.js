@@ -35,12 +35,31 @@ async function run() {
                 const user = { name: req.body.name, password: hashedPassword, email: req.body.email };
                 const doc = user;
                 const result = await usersCollection.insertOne(doc);
-                res.send(result);
+                res.status(200).send(result);
             }
             catch {
                 res.status(500).send()
             }
 
+        })
+
+
+        app.post('/users/login', async (req, res) => {
+            try {
+                const user = await usersCollection.findOne({ email: req.body.email });
+                console.log(user);
+                if (user) {
+                    const cmp = await bcrypt.compare(req.body.password, user.password);
+                    if (cmp) {
+                        res.send(cmp)
+                    } else {
+                        res.send('something went wrong')
+                    }
+                }
+            }
+            catch {
+                res.status(500).send()
+            }
         })
 
     } finally {
